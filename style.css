@@ -1,3 +1,27 @@
 .black {
-    background-color: rgb(177, 177, 177)
+    background-color: rgb(130, 130, 130)
+}
+.white {
+    background-color: aliceblue;
+}
+h1 {
+    color: aliceblue;
+}
+table {
+    border: 1px solid white;
+    line-height: 90px;
+    margin: 0 94px 0 94px;
+}
+th {
+    font-size: 42px;
+}
+tr {
+    font-size: 42px;
+    text-align: center;
+}
+body {
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    background-color: black;
 }
