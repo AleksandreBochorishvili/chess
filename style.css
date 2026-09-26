@@ -137,15 +137,68 @@ button:hover {
 .square {
   width: 12.5%;
   height: 12.5%;
+  position: relative;
   text-align: center;
   font-size: clamp(2rem, 3.5vw, 4rem);
   line-height: 1;
   user-select: none;
-  transition: filter 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+  transition: filter 0.2s ease, box-shadow 0.2s ease;
 }
 
 .square:hover {
   filter: brightness(1.06);
+}
+
+.square:focus-visible {
+  outline: 4px solid #f7d58d;
+  outline-offset: -5px;
+  z-index: 1;
+}
+
+.square.selected {
+  box-shadow: inset 0 0 0 5px rgba(255, 224, 105, 0.9);
+}
+
+.square.legal-move::after,
+.square.legal-capture::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.square.legal-move::after {
+  width: 24%;
+  aspect-ratio: 1;
+  top: 38%;
+  left: 38%;
+  border-radius: 50%;
+  background: rgba(35, 45, 34, 0.35);
+}
+
+.square.legal-capture::after {
+  inset: 4px;
+  border: 5px solid rgba(190, 53, 45, 0.68);
+  border-radius: 50%;
+}
+
+.square.in-check {
+  background-image: radial-gradient(circle, rgba(234, 72, 64, 0.75), transparent 72%);
+}
+
+.piece {
+  position: relative;
+  z-index: 2;
+  cursor: grab;
+}
+
+.piece:active {
+  cursor: grabbing;
+}
+
+.square.drag-over {
+  box-shadow: inset 0 0 0 5px rgba(255, 224, 105, 0.9);
 }
 
 .light {
@@ -225,4 +278,3 @@ button:hover {
     padding-top: 20px;
   }
 }
-
