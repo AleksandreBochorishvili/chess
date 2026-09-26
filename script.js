@@ -3,6 +3,7 @@ const turnStatus = document.getElementById("turn-status");
 const positionStatus = document.getElementById("position-status");
 const moveCount = document.getElementById("move-count");
 const gameMessage = document.getElementById("game-message");
+const playModeSelect = document.getElementById("play-mode");
 const pieceSymbols = {
   K: "♔", Q: "♕", R: "♖", B: "♗", N: "♘", P: "♙",
   k: "♚", q: "♛", r: "♜", b: "♝", n: "♞", p: "♟",
@@ -29,6 +30,13 @@ const initialPosition = () => ({
 });
 
 let game = initialPosition();
+let playMode = playModeSelect.value;
+let computerTimer = null;
+let computerThinking = false;
+
+function isComputerTurn() {
+  return playMode === "computer" && game.turn === "b";
+}
 
 function colorOf(piece) {
   if (!piece) return null;
@@ -301,6 +309,7 @@ function makeMove(move) {
 }
 
 function handleSquare(row, col) {
+  if (isComputerTurn()) return;
   if (game.selected) {
     const chosenMove = game.legalMoves.find((move) => move.toRow === row && move.toCol === col);
     if (chosenMove) {
@@ -322,11 +331,50 @@ function squareName(row, col) {
   return `${"abcdefgh"[col]}${8 - row}`;
 }
 
+function chooseComputerMove(moves) {
+  const pieceValues = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 100 };
+  const scoredMoves = moves.map((move) => {
+    const piece = game.board[move.fromRow][move.fromCol];
+    const target = move.enPassant
+      ? game.board[move.fromRow][move.toCol]
+      : game.board[move.toRow][move.toCol];
+    const nextPosition = clonePosition(game);
+    applyMove(nextPosition, move);
+    const checkBonus = inCheck(nextPosition, nextPosition.turn) ? 1 : 0;
+    const centerBonus = 0.15 * (3.5 - Math.abs(3.5 - move.toCol));
+    return {
+      move,
+      score: (target ? pieceValues[target.toLowerCase()] : 0)
+        + (piece.toLowerCase() === "p" && move.toRow === 7 ? 8 : 0)
+        + checkBonus
+        + centerBonus
+        + Math.random() * 0.4,
+    };
+  });
+  scoredMoves.sort((a, b) => b.score - a.score);
+  return scoredMoves[0].move;
+}
+
+function scheduleComputerMove() {
+  if (!isComputerTurn() || computerTimer !== null) return;
+  computerThinking = true;
+  gameMessage.textContent = "The computer is thinking...";
+  computerTimer = window.setTimeout(() => {
+    computerTimer = null;
+    computerThinking = false;
+    if (!isComputerTurn()) return;
+    const moves = allLegalMoves(game, "b");
+    if (moves.length) makeMove(chooseComputerMove(moves));
+    else render();
+  }, 550);
+}
+
 function render() {
   const currentCheck = inCheck(game, game.turn);
   const possibleMoves = allLegalMoves(game, game.turn);
   const gameOver = possibleMoves.length === 0;
   const sideName = game.turn === "w" ? "White" : "Black";
+  const computerTurn = isComputerTurn();
   boardElement.replaceChildren();
 
   for (let row = 0; row < 8; row += 1) {
@@ -353,7 +401,7 @@ function render() {
         const pieceElement = document.createElement("span");
         pieceElement.className = `piece ${colorOf(piece) === "w" ? "white" : "black"}`;
         pieceElement.textContent = pieceSymbols[piece];
-        pieceElement.draggable = colorOf(piece) === game.turn && !gameOver;
+        pieceElement.draggable = colorOf(piece) === game.turn && !gameOver && !computerTurn;
         square.append(pieceElement);
       }
       tableRow.append(square);
@@ -368,9 +416,17 @@ function render() {
   moveCount.textContent = String(Math.ceil(game.moves / 2));
   gameMessage.textContent = gameOver
     ? (currentCheck ? "Checkmate! Start a new game to play again." : "Stalemate. Start a new game to play again.")
+    : computerThinking
+      ? "The computer is thinking..."
+      : computerTurn
+        ? "The computer is choosing its move."
     : currentCheck
       ? `${sideName} is in check. Make a legal move to protect the king.`
-      : "Select a piece and then a highlighted square, or drag it to its destination. Pawns promote to a queen.";
+      : playMode === "computer"
+        ? "You are White. Select a piece and click a highlighted square, or drag it. Pawns promote to a queen."
+        : "Select a piece and then a highlighted square, or drag it to its destination. White moves first.";
+
+  if (!gameOver) scheduleComputerMove();
 }
 
 boardElement.addEventListener("click", (event) => {
@@ -417,6 +473,18 @@ boardElement.addEventListener("drop", (event) => {
 });
 
 document.getElementById("reset-game").addEventListener("click", () => {
+  window.clearTimeout(computerTimer);
+  computerTimer = null;
+  computerThinking = false;
+  game = initialPosition();
+  render();
+});
+
+playModeSelect.addEventListener("change", () => {
+  window.clearTimeout(computerTimer);
+  computerTimer = null;
+  computerThinking = false;
+  playMode = playModeSelect.value;
   game = initialPosition();
   render();
 });
