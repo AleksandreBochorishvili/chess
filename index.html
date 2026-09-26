@@ -1,98 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>HTML Chess board</title>
-</head>
-<body>
-    <header>
-        <h1>Chess board</h1>
-    </header>
-    <body>
-        <table>
-            <thead>
-                <th class="white">&#9814;</th>
-                <th class="black">&#9816;</th>
-                <th class="white">&#9815;</th>
-                <th class="black">&#9812;</th>
-                <th class="white">&#9813;</th>
-                <th class="black">&#9815;</th>
-                <th class="white">&#9816;</th>
-                <th class="black">&#9814;</th>
-            </thead>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grandmaster Chess Board</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="brand-block">
+          <p class="eyebrow">Strategy room</p>
+          <h1>Grandmaster Chess Board</h1>
+        </div>
+
+        <div class="status-card">
+          <span class="status-label">Current turn</span>
+          <strong>White to move</strong>
+        </div>
+      </header>
+
+      <main class="game-layout">
+        <section class="board-panel" aria-label="Chess board panel">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Live board</p>
+              <h2>Opening setup</h2>
+            </div>
+            <button type="button">Reset</button>
+          </div>
+
+          <table class="chessboard" aria-label="Chess board">
             <tbody>
-                <td class="black">&#9817;</td>
-                <td class="white">&#9817;</td>
-                <td class="black">&#9817;</td>
-                <td class="white">&#9817;</td>
-                <td class="black">&#9817;</td>
-                <td class="white">&#9817;</td>
-                <td class="black">&#9817;</td>
-                <td class="white">&#9817;</td>
+              <tr>
+                <td class="square light"><span class="piece black">♜</span></td>
+                <td class="square dark"><span class="piece black">♞</span></td>
+                <td class="square light"><span class="piece black">♝</span></td>
+                <td class="square dark"><span class="piece black">♛</span></td>
+                <td class="square light"><span class="piece black">♚</span></td>
+                <td class="square dark"><span class="piece black">♝</span></td>
+                <td class="square light"><span class="piece black">♞</span></td>
+                <td class="square dark"><span class="piece black">♜</span></td>
+              </tr>
+              <tr>
+                <td class="square dark"><span class="piece black">♟</span></td>
+                <td class="square light"><span class="piece black">♟</span></td>
+                <td class="square dark"><span class="piece black">♟</span></td>
+                <td class="square light"><span class="piece black">♟</span></td>
+                <td class="square dark"><span class="piece black">♟</span></td>
+                <td class="square light"><span class="piece black">♟</span></td>
+                <td class="square dark"><span class="piece black">♟</span></td>
+                <td class="square light"><span class="piece black">♟</span></td>
+              </tr>
+              <tr>
+                <td class="square light"></td>
+                <td class="square dark"></td>
+                <td class="square light"></td>
+                <td class="square dark"></td>
+                <td class="square light"></td>
+                <td class="square dark"></td>
+                <td class="square light"></td>
+                <td class="square dark"></td>
+              </tr>
+              <tr>
+                <td class="square dark"></td>
+                <td class="square light"></td>
+                <td class="square dark"></td>
+                <td class="square light"></td>
+                <td class="square dark"></td>
+                <td class="square light"></td>
+                <td class="square dark"></td>
+                <td class="square light"></td>
+              </tr>
+              <tr>
+                <td class="square light"></td>
+                <td class="square dark"></td>
+                <td class="square light"></td>
+                <td class="square dark"></td>
+                <td class="square light"></td>
+                <td class="square dark"></td>
+                <td class="square light"></td>
+                <td class="square dark"></td>
+              </tr>
+              <tr>
+                <td class="square dark"></td>
+                <td class="square light"></td>
+                <td class="square dark"></td>
+                <td class="square light"></td>
+                <td class="square dark"></td>
+                <td class="square light"></td>
+                <td class="square dark"></td>
+                <td class="square light"></td>
+              </tr>
+              <tr>
+                <td class="square light"><span class="piece white">♙</span></td>
+                <td class="square dark"><span class="piece white">♙</span></td>
+                <td class="square light"><span class="piece white">♙</span></td>
+                <td class="square dark"><span class="piece white">♙</span></td>
+                <td class="square light"><span class="piece white">♙</span></td>
+                <td class="square dark"><span class="piece white">♙</span></td>
+                <td class="square light"><span class="piece white">♙</span></td>
+                <td class="square dark"><span class="piece white">♙</span></td>
+              </tr>
+              <tr>
+                <td class="square dark"><span class="piece white">♖</span></td>
+                <td class="square light"><span class="piece white">♘</span></td>
+                <td class="square dark"><span class="piece white">♗</span></td>
+                <td class="square light"><span class="piece white">♕</span></td>
+                <td class="square dark"><span class="piece white">♔</span></td>
+                <td class="square light"><span class="piece white">♗</span></td>
+                <td class="square dark"><span class="piece white">♘</span></td>
+                <td class="square light"><span class="piece white">♖</span></td>
+              </tr>
             </tbody>
-            <tr>
-                <td class="white">&nbsp;</tb>
-                <td class="black">&nbsp;</tb>
-                <td class="white">&nbsp;</td>
-                <td class="black">&nbsp;</td>
-                <td class="white">&nbsp;</td>
-                <td class="black">&nbsp;</td>
-                <td class="white">&nbsp;</td>
-                <td class="black">&nbsp;</td>
-            </tr>
-            <tr>
-                <td class="black">&nbsp;</td>
-                <td class="white">&nbsp;</td>
-                <td class="black">&nbsp;</td>
-                <td class="white">&nbsp;</td>
-                <td class="black">&nbsp;</td>
-                <td class="white">&nbsp;</td>
-                <td class="black">&nbsp;</td>
-                <td class="white">&nbsp;</td>
-            </tr>
-            <tr>
-                <td class="white">&nbsp;</td>
-                <td class="black">&nbsp;</td>
-                <td class="white">&nbsp;</td>
-                <td class="black">&nbsp;</td>
-                <td class="white">&nbsp;</td>
-                <td class="black">&nbsp;</td>
-                <td class="white">&nbsp;</td>
-                <td class="black">&nbsp;</td>
-            </tr>
-            <tr>
-                <td class="black">&nbsp;</td>
-                <td class="white">&nbsp;</td>
-                <td class="black">&nbsp;</td>
-                <td class="white">&nbsp;</td>
-                <td class="black">&nbsp;</td>
-                <td class="white">&nbsp;</td>
-                <td class="black">&nbsp;</td>
-                <td class="white">&nbsp;</td>
-            </tr>
-            <tr>
-                <td class="white">&#9823;</td>
-                <td class="black">&#9823;</td>
-                <td class="white">&#9823;</td>
-                <td class="black">&#9823;</td>
-                <td class="white">&#9823;</td>
-                <td class="black">&#9823;</td>
-                <td class="white">&#9823;</td>
-                <td class="black">&#9823;</td>
-            </tr>
-            <tr>
-                <td class="black">&#9820;</td>
-                <td class="white">&#9822;</td>
-                <td class="black">&#9821;</td>
-                <td class="white">&#9818;</td>
-                <td class="black">&#9819;</td>
-                <td class="white">&#9821;</td>
-                <td class="black">&#9822;</td>
-                <td class="white">&#9820;</td>
-            </tr>
-        </table>
-    </body>
-</body>
+          </table>
+        </section>
+
+        <aside class="info-panel">
+          <div class="info-card">
+            <p class="eyebrow">Match status</p>
+            <h3>Position overview</h3>
+            <ul class="meta-list">
+              <li><span>Theme</span><strong>Classic</strong></li>
+              <li><span>Difficulty</span><strong>Intermediate</strong></li>
+              <li><span>Clock</span><strong>15:00</strong></li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <p class="eyebrow">Opening note</p>
+            <h3>Control the center</h3>
+            <p>
+              Develop fast, castle early, and prepare for tactical play in the middle game.
+            </p>
+          </div>
+        </aside>
+      </main>
+    </div>
+  </body>
 </html>
