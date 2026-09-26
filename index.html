@@ -14,9 +14,9 @@
           <h1>Grandmaster Chess Board</h1>
         </div>
 
-        <div class="status-card">
+        <div class="status-card" aria-live="polite">
           <span class="status-label">Current turn</span>
-          <strong>White to move</strong>
+          <strong id="turn-status">White to move</strong>
         </div>
       </header>
 
@@ -25,94 +25,13 @@
           <div class="panel-header">
             <div>
               <p class="eyebrow">Live board</p>
-              <h2>Opening setup</h2>
+              <h2 id="position-status">Opening setup</h2>
             </div>
-            <button type="button">Reset</button>
+            <button id="reset-game" type="button">New game</button>
           </div>
 
           <table class="chessboard" aria-label="Chess board">
-            <tbody>
-              <tr>
-                <td class="square light"><span class="piece black">♜</span></td>
-                <td class="square dark"><span class="piece black">♞</span></td>
-                <td class="square light"><span class="piece black">♝</span></td>
-                <td class="square dark"><span class="piece black">♛</span></td>
-                <td class="square light"><span class="piece black">♚</span></td>
-                <td class="square dark"><span class="piece black">♝</span></td>
-                <td class="square light"><span class="piece black">♞</span></td>
-                <td class="square dark"><span class="piece black">♜</span></td>
-              </tr>
-              <tr>
-                <td class="square dark"><span class="piece black">♟</span></td>
-                <td class="square light"><span class="piece black">♟</span></td>
-                <td class="square dark"><span class="piece black">♟</span></td>
-                <td class="square light"><span class="piece black">♟</span></td>
-                <td class="square dark"><span class="piece black">♟</span></td>
-                <td class="square light"><span class="piece black">♟</span></td>
-                <td class="square dark"><span class="piece black">♟</span></td>
-                <td class="square light"><span class="piece black">♟</span></td>
-              </tr>
-              <tr>
-                <td class="square light"></td>
-                <td class="square dark"></td>
-                <td class="square light"></td>
-                <td class="square dark"></td>
-                <td class="square light"></td>
-                <td class="square dark"></td>
-                <td class="square light"></td>
-                <td class="square dark"></td>
-              </tr>
-              <tr>
-                <td class="square dark"></td>
-                <td class="square light"></td>
-                <td class="square dark"></td>
-                <td class="square light"></td>
-                <td class="square dark"></td>
-                <td class="square light"></td>
-                <td class="square dark"></td>
-                <td class="square light"></td>
-              </tr>
-              <tr>
-                <td class="square light"></td>
-                <td class="square dark"></td>
-                <td class="square light"></td>
-                <td class="square dark"></td>
-                <td class="square light"></td>
-                <td class="square dark"></td>
-                <td class="square light"></td>
-                <td class="square dark"></td>
-              </tr>
-              <tr>
-                <td class="square dark"></td>
-                <td class="square light"></td>
-                <td class="square dark"></td>
-                <td class="square light"></td>
-                <td class="square dark"></td>
-                <td class="square light"></td>
-                <td class="square dark"></td>
-                <td class="square light"></td>
-              </tr>
-              <tr>
-                <td class="square light"><span class="piece white">♙</span></td>
-                <td class="square dark"><span class="piece white">♙</span></td>
-                <td class="square light"><span class="piece white">♙</span></td>
-                <td class="square dark"><span class="piece white">♙</span></td>
-                <td class="square light"><span class="piece white">♙</span></td>
-                <td class="square dark"><span class="piece white">♙</span></td>
-                <td class="square light"><span class="piece white">♙</span></td>
-                <td class="square dark"><span class="piece white">♙</span></td>
-              </tr>
-              <tr>
-                <td class="square dark"><span class="piece white">♖</span></td>
-                <td class="square light"><span class="piece white">♘</span></td>
-                <td class="square dark"><span class="piece white">♗</span></td>
-                <td class="square light"><span class="piece white">♕</span></td>
-                <td class="square dark"><span class="piece white">♔</span></td>
-                <td class="square light"><span class="piece white">♗</span></td>
-                <td class="square dark"><span class="piece white">♘</span></td>
-                <td class="square light"><span class="piece white">♖</span></td>
-              </tr>
-            </tbody>
+            <tbody id="board"></tbody>
           </table>
         </section>
 
@@ -122,20 +41,21 @@
             <h3>Position overview</h3>
             <ul class="meta-list">
               <li><span>Theme</span><strong>Classic</strong></li>
-              <li><span>Difficulty</span><strong>Intermediate</strong></li>
-              <li><span>Clock</span><strong>15:00</strong></li>
+              <li><span>Moves played</span><strong id="move-count">0</strong></li>
+              <li><span>Input</span><strong>Click or drag</strong></li>
             </ul>
           </div>
 
           <div class="info-card">
             <p class="eyebrow">Opening note</p>
-            <h3>Control the center</h3>
-            <p>
-              Develop fast, castle early, and prepare for tactical play in the middle game.
+            <h3>How to play</h3>
+            <p id="game-message">
+            Select a piece and then a highlighted square, or drag it to its destination. White moves first.
             </p>
           </div>
         </aside>
       </main>
     </div>
+    <script src="script.js"></script>
   </body>
 </html>
