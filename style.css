@@ -124,6 +124,29 @@ button:hover {
   box-shadow: 0 10px 20px rgba(247, 213, 141, 0.3);
 }
 
+.mode-label {
+  display: block;
+  margin: 12px 0 8px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+select {
+  width: 100%;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: #171f32;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+select:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+
 .chessboard {
   width: min(100%, 720px, max(280px, calc(100vh - 260px)));
   aspect-ratio: 1;
