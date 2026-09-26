@@ -31,11 +31,19 @@ const initialPosition = () => ({
 
 let game = initialPosition();
 let playMode = playModeSelect.value;
+let computerRating = 100;
 let computerTimer = null;
 let computerThinking = false;
 
 function isComputerTurn() {
   return playMode === "computer" && game.turn === "b";
+}
+
+function readPlayMode() {
+  const value = playModeSelect.value;
+  const rating = Number(value.replace("computer-", ""));
+  playMode = value === "friend" ? "friend" : "computer";
+  computerRating = playMode === "computer" && Number.isFinite(rating) ? rating : 100;
 }
 
 function colorOf(piece) {
@@ -331,28 +339,94 @@ function squareName(row, col) {
   return `${"abcdefgh"[col]}${8 - row}`;
 }
 
+const pieceValues = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 0 };
+const checkmateScore = 100000;
+
+function evaluatePosition(position) {
+  let score = 0;
+  for (let row = 0; row < 8; row += 1) {
+    for (let col = 0; col < 8; col += 1) {
+      const piece = position.board[row][col];
+      if (!piece) continue;
+      const color = colorOf(piece);
+      const type = piece.toLowerCase();
+      const sign = color === "b" ? 1 : -1;
+      const centerDistance = Math.abs(3.5 - row) + Math.abs(3.5 - col);
+      const centerBonus = Math.round((7 - centerDistance) * (type === "n" || type === "b" ? 5 : 2));
+      const pawnAdvance = type === "p" ? (color === "b" ? row - 1 : 6 - row) * 4 : 0;
+      score += sign * (pieceValues[type] + centerBonus + pawnAdvance);
+    }
+  }
+  return score;
+}
+
+function moveOrderScore(position, move) {
+  const attacker = position.board[move.fromRow][move.fromCol];
+  const captured = move.enPassant
+    ? position.board[move.fromRow][move.toCol]
+    : position.board[move.toRow][move.toCol];
+  const promotion = move.toRow === 7 && attacker === "p"
+    || move.toRow === 0 && attacker === "P";
+  return (captured ? pieceValues[captured.toLowerCase()] * 10 - pieceValues[attacker.toLowerCase()] : 0)
+    + (promotion ? pieceValues.q : 0);
+}
+
+function orderedMoves(position) {
+  return allLegalMoves(position, position.turn)
+    .sort((a, b) => moveOrderScore(position, b) - moveOrderScore(position, a));
+}
+
+function searchPosition(position, depth, alpha, beta) {
+  const moves = orderedMoves(position);
+  if (!moves.length) {
+    if (!inCheck(position, position.turn)) return 0;
+    return position.turn === "b" ? -checkmateScore - depth : checkmateScore + depth;
+  }
+  if (depth === 0) return evaluatePosition(position);
+
+  const maximizing = position.turn === "b";
+  let bestScore = maximizing ? -Infinity : Infinity;
+  for (const move of moves) {
+    const nextPosition = clonePosition(position);
+    applyMove(nextPosition, move);
+    const score = searchPosition(nextPosition, depth - 1, alpha, beta);
+    if (maximizing) {
+      bestScore = Math.max(bestScore, score);
+      alpha = Math.max(alpha, bestScore);
+    } else {
+      bestScore = Math.min(bestScore, score);
+      beta = Math.min(beta, bestScore);
+    }
+    if (beta <= alpha) break;
+  }
+  return bestScore;
+}
+
 function chooseComputerMove(moves) {
-  const pieceValues = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 100 };
-  const scoredMoves = moves.map((move) => {
-    const piece = game.board[move.fromRow][move.fromCol];
-    const target = move.enPassant
-      ? game.board[move.fromRow][move.toCol]
-      : game.board[move.toRow][move.toCol];
+  const mistakeChance = 0.65 * (3200 - computerRating) / 3100;
+  if (Math.random() < mistakeChance) {
+    return moves[Math.floor(Math.random() * moves.length)];
+  }
+
+  const depth = computerRating >= 1800 ? 3 : computerRating >= 900 ? 2 : 1;
+  const ordered = moves.slice().sort(
+    (a, b) => moveOrderScore(game, b) - moveOrderScore(game, a),
+  );
+  let bestMove = ordered[0];
+  let bestScore = -Infinity;
+  let alpha = -Infinity;
+
+  for (const move of ordered) {
     const nextPosition = clonePosition(game);
     applyMove(nextPosition, move);
-    const checkBonus = inCheck(nextPosition, nextPosition.turn) ? 1 : 0;
-    const centerBonus = 0.15 * (3.5 - Math.abs(3.5 - move.toCol));
-    return {
-      move,
-      score: (target ? pieceValues[target.toLowerCase()] : 0)
-        + (piece.toLowerCase() === "p" && move.toRow === 7 ? 8 : 0)
-        + checkBonus
-        + centerBonus
-        + Math.random() * 0.4,
-    };
-  });
-  scoredMoves.sort((a, b) => b.score - a.score);
-  return scoredMoves[0].move;
+    const score = searchPosition(nextPosition, depth - 1, alpha, Infinity);
+    if (score > bestScore) {
+      bestScore = score;
+      bestMove = move;
+    }
+    alpha = Math.max(alpha, bestScore);
+  }
+  return bestMove;
 }
 
 function scheduleComputerMove() {
@@ -409,7 +483,9 @@ function render() {
     boardElement.append(tableRow);
   }
 
-  turnStatus.textContent = gameOver ? "Game over" : `${sideName} to move${currentCheck ? " - check" : ""}`;
+  turnStatus.textContent = gameOver
+    ? "Game over"
+    : `${computerTurn ? `Computer (${computerRating})` : sideName} to move${currentCheck ? " - check" : ""}`;
   positionStatus.textContent = gameOver
     ? (currentCheck ? `${sideName === "White" ? "Black" : "White"} wins by checkmate` : "Draw by stalemate")
     : currentCheck ? "King in check" : game.moves ? "Game in progress" : "Opening setup";
@@ -423,7 +499,7 @@ function render() {
     : currentCheck
       ? `${sideName} is in check. Make a legal move to protect the king.`
       : playMode === "computer"
-        ? "You are White. Select a piece and click a highlighted square, or drag it. Pawns promote to a queen."
+        ? `You are White. Computer level: ${computerRating} (approximate). Select a piece and click a highlighted square, or drag it.`
         : "Select a piece and then a highlighted square, or drag it to its destination. White moves first.";
 
   if (!gameOver) scheduleComputerMove();
@@ -484,7 +560,7 @@ playModeSelect.addEventListener("change", () => {
   window.clearTimeout(computerTimer);
   computerTimer = null;
   computerThinking = false;
-  playMode = playModeSelect.value;
+  readPlayMode();
   game = initialPosition();
   render();
 });

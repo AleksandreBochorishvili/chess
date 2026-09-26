@@ -147,6 +147,13 @@ select:focus-visible {
   outline-offset: 3px;
 }
 
+.rating-note {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
 .chessboard {
   width: min(100%, 720px, max(280px, calc(100vh - 260px)));
   aspect-ratio: 1;
